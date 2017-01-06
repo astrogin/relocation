@@ -1,5 +1,5 @@
 <?php 
-	require 'D:\phpapachemsql\www\connect.php';
+	require_once 'connect.php';
 	#connect.php
 	$mysql_connect_object = new connect;
 	abstract class Mysql {

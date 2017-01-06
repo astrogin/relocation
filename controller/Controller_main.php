@@ -1,6 +1,6 @@
-<?php 
-	require_once 'D:\phpapachemsql\www\interface\interface.php';
-	require_once 'D:/phpapachemsql/www/model/Model_main.php';
+<?php
+	require_once "interface/Interface.php";
+	require_once 'model/Model_main.php';
 	class Controller_main 
 	{
 		private $Model_obj;
@@ -12,7 +12,7 @@
 			$this->chek_answer_model($this->Model_obj->Action_index());
 		}		
 		private function chek_answer_model($array){
-			require_once "D:/phpapachemsql/www/View/View_main.php";
+			require_once "View/View_main.php";
 			if ($array != null) {
 				showInfo($array);
 			}else{

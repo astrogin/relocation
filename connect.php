@@ -1,7 +1,7 @@
 <?php 
 	class connect
 	{
-		private $host = 'localhost';
+		private $host = 'localhost:3306';
 		private $password = 'kira0810';
 		private $user = "root";
 		private $dbname = "my_db";

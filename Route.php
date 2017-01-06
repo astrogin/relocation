@@ -46,7 +46,7 @@ class Route extends As_router
 	protected function inc_files(){
 		$this->controller_path .= $this->controller_name.$this->controlAndAction['controller_name'].'.php';
 		if (file_exists($this->controller_path)) {
-			include $this->controller_path;
+			require_once "$this->controller_path";
 		}else{
 			$this->Error404();
 		}
