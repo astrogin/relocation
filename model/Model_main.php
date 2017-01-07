@@ -1,7 +1,5 @@
 <?php 
 	use library_function\config;
-	require_once "Model_abstract_class_mysql.php";
-	require_once "Model_cookie.php";
 	class Model_main implements IModel_main
 	{
 		protected $answer_urls_array;

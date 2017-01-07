@@ -1,7 +1,4 @@
-<?php 
-	require_once 'connect.php';
-	#connect.php
-	$mysql_connect_object = new connect;
+<?php
 	abstract class Mysql {
 		protected $mysql_result = true;
 		protected $link;

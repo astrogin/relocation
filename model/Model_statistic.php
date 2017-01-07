@@ -1,7 +1,5 @@
 <?php 
 	use library_function\config;
-	require_once 'Model_abstract_class_mysql.php';
-	require_once 'D:\phpapachemsql\www\library\library_function.php';
 	class Model_statistic implements IModel_statistic {
 		private $mysqli;
 		function __construct(IMysql_statistic $msq)
@@ -13,7 +11,7 @@
 			return $this->push_array_answer();
 		}
 		private function push_array_answer(){
-			$array_urls = explode("Q",substr(config::clean($_SERVER["REQUEST_URI"]), 1));
+			$array_urls = explode("Q",substr(config::clean($_SERVER["REQUEST_URI"]), strrpos(config::clean($_SERVER["REQUEST_URI"]),'/')+1));
 			$real_uri = mysqli_fetch_assoc($this->mysqli->real_url_SELECT("realurl","Vertuality",$array_urls[0]))['Reality'];
 			$statistic_uri = substr($array_urls[1],0,-1);
 			$result_statistic = $this->mysqli->real_url_SELECT("statistic","statistic_url",$statistic_uri,"date");

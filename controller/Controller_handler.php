@@ -1,6 +1,9 @@
-<?php 
-	require_once 'D:\phpapachemsql\www\interface\interface.php';
-	require_once 'D:\phpapachemsql\www\model\Model_handler.php';
+<?php
+	require_once '../interface/Interface.php';
+	require_once '../library/library_function.php';
+    require_once "../model/Model_abstract_class_mysql.php";
+    require_once '../connect.php';
+	require_once '../model/Model_handler.php';
 	class Controller_handler{
 		private $array_urls_in_model = array();
 		protected $Model_handler;
@@ -9,14 +12,16 @@
 		}
 		public function Action_handler()
 		{
-				$this->array_urls_in_model = $_POST;
-				$this->add_view($this->Model_handler->Action_handler($this->array_urls_in_model));
+				$this->array_urls_in_model = $_REQUEST;
+				echo $this->add_view($this->Model_handler->Action_handler($this->array_urls_in_model));
 		}
 		protected function add_view($arr){
-			require_once "D:/phpapachemsql/www/view/View_handler.php";
+			require_once "../View/View_handler.php";
 			result_new_urls($arr);
 		}
 	}
+    #connect.php
+    $mysql_connect_object = new connect;
 	#Model_handler.php
 	$msq_command = new Mysql_comands_handler($mysql_connect_object);
 	$sup_func = new executor_supporting_function($msq_command);
@@ -24,5 +29,5 @@
 	$model_obj = new Model_handler($executor_obj);
 	#Controller_handler.php
 	$controller_handler = new Controller_handler($model_obj);
-	$controller_handler->Action_handler();
+    $controller_handler->Action_handler();
  ?>

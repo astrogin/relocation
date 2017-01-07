@@ -1,7 +1,10 @@
 <?php
-	require_once 'D:\phpapachemsql\www\interface\interface.php';
-	require_once 'D:\phpapachemsql\www\model\Model_statistic.php';
-	require_once 'D:\phpapachemsql\www\view\View_statistic.php';
+	require_once 'interface\interface.php';
+	require_once 'connect.php';
+	require_once 'model\Model_abstract_class_mysql.php';
+	require_once 'library\library_function.php';
+	require_once 'model\Model_statistic.php';
+	require_once 'view\View_statistic.php';
 	class Controller_statistic {
 		private $model_statistic;
 		private $array_answer;
@@ -21,6 +24,8 @@
 			}
 		}
 	}
+	#connect.php
+	$mysql_connect_object = new connect;
 	#Model_statistic.php
 	$mysql_statistic = new Mysql_statistic($mysql_connect_object);
 	$model_statistic = new Model_statistic($mysql_statistic);

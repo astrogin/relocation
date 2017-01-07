@@ -1,7 +1,5 @@
-<?php 
+<?php
 	use library_function\config;
-	require 'D:\phpapachemsql\www\library\library_function.php';
-	require "Model_abstract_class_mysql.php";
 	class Model_handler implements IModel_handler{
 		private $executor_handler;
 		private $array_answer_of_model_handler = array();

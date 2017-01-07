@@ -1,7 +1,7 @@
 <?php 
 function sortInformationByDate($mass){
-	echo "<div class = 'realLink'>".$mass["real"]."</div>";
 	echo "<div class = 'numLinks'>Количество переходов - ".count($mass["date"])."</div>";
+	echo "<div class = 'realLink'>".$mass["real"]."</div>";
 		for ($i = 0; $i <  count($mass["date"]) ; $i++) {
 			echo "<div class = 'container'>";
 			echo "<div class = 'date'><p>Дата посещения</p>".$mass["date"][$i]["date"]."</div>";

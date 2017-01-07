@@ -1,5 +1,8 @@
 <?php
 	require_once "interface/Interface.php";
+	require_once 'connect.php';
+	require_once "model/Model_abstract_class_mysql.php";
+	require_once "model/Model_cookie.php";
 	require_once 'model/Model_main.php';
 	class Controller_main 
 	{
@@ -20,6 +23,8 @@
 			}
 		}
 	}
+	#connect.php
+	$mysql_connect_object = new connect;
 	#Model_cookie.php
 	$take_cookie = new Take_cookies;
 	$mysql_commands_cookie = new Mysql_for_cookie($mysql_connect_object);

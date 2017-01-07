@@ -1,9 +1,5 @@
 <?php
 	use library_function\config;
-	require_once 'Model_abstract_class_mysql.php';
-	require_once 'D:\phpapachemsql\www\library\library_function.php';
-	require_once 'D:\phpapachemsql\www\library\SxGeo.php';
-	require_once 'D:\phpapachemsql\www\library\browser_chek.php';
 	class Model_take_data implements IModel_take_data{
 		private $ip;
 		private $date_time;
@@ -69,7 +65,7 @@
 	}
 	class take_region implements ITake_region{
 		public function return_region(){
-					$SxGeo = new SxGeo('D:\phpapachemsql\www\library\SxGeoCity.dat', SXGEO_BATCH | SXGEO_MEMORY);
+					$SxGeo = new SxGeo('library\SxGeoCity.dat', SXGEO_BATCH | SXGEO_MEMORY);
 					$region = $SxGeo->getCityFull($_SERVER["REMOTE_ADDR"])['region']['name_ru'];
 					if ($region == '') {
 						$region = 'Неизвестный регион';

@@ -1,7 +1,12 @@
 <?php 
-	require_once 'D:\phpapachemsql\www\interface\interface.php';
-	require_once 'D:\phpapachemsql\www\model\Model_take_data.php';
-	require_once 'D:\phpapachemsql\www\model\Model_relocation.php';
+	require_once 'interface\interface.php';
+	require_once 'connect.php';
+	require_once 'model\Model_abstract_class_mysql.php';
+	require_once 'library\library_function.php';
+	require_once 'library\SxGeo.php';
+	require_once 'library\browser_chek.php';
+	require_once 'model\Model_take_data.php';
+	require_once 'model\Model_relocation.php';
 	class Controller_relocation {
 		private $Model_take_data;
 		private $Model_relocation;
@@ -15,6 +20,8 @@
 			$this->Model_take_data->Action_take_data();
 		}
 	}
+	#connect.php
+	$mysql_connect_object = new connect;
 	#Model_take_data.php
 	$obj_browser_scr = new script_browser_version_platform;
 	$obj_reg = new take_region;

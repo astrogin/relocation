@@ -1,7 +1,5 @@
 <?php 
 	use library_function\config;
-	require_once 'Model_abstract_class_mysql.php';
-	require_once 'D:\phpapachemsql\www\library\library_function.php';
 	class Model_relocation implements IModel_relocation{
 		private $mysqli;
 		function __construct(IMysql_model_relocation $msq)
@@ -12,7 +10,7 @@
 			$this->logic_relocation();
 		}
 		private function logic_relocation(){
-			$vertual_uri = explode("Q",substr(config::clean($_SERVER["REQUEST_URI"]), 1))[0];
+			$vertual_uri = explode("Q",substr(config::clean($_SERVER["REQUEST_URI"]), strrpos(config::clean($_SERVER["REQUEST_URI"]),'/')+1))[0];
 			$result_real_uri = $this->mysqli->real_url_SELECT('realurl','Vertuality',$vertual_uri);
 			if ($result_real_uri->num_rows) {
 				$reaul_uri_nonfixed = mysqli_fetch_assoc($result_real_uri)['Reality'];

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<script src = "/library/jquery-3.1.1.js"></script>
+	<script src = "library/jquery-3.1.1.js"></script>
 	<title>Document</title>
 </head>
 <body>
@@ -37,7 +37,7 @@
 				ajaxFunc: function (obj) {
 					$.ajax({
 					url:"controller/Controller_handler.php",
-					type:"POST",
+					type:"GET",
 					data: obj,
 					success: function (data) {
 						$('#test').html(data);
@@ -48,7 +48,7 @@
 					$("form").submit(function (){
 						var regExp = /[\s\S]{1,}\.+[\s\S]{2,}/gi;
 						var inputValue = $("#mainInput")[0].value.split(' ');
-						objValidator.clickValid(regExp,inputValue)
+						objValidator.clickValid(regExp,inputValue);
 					return false;
 				})
 });
