@@ -36,7 +36,7 @@
 		function addInTablesStatisticurlAndStatisticNewUrl($table_1,$table_2,$col,$val_1,$val_2,$val_3);
 	}
 	interface IExecutor_handler{
-		function executer($array);
+		function executer($array,$callback);
 	}
 	interface IExecutor_supporting_function{
 		function create_array_new_links($vert_url,$statistic_url,$real_url);

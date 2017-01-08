@@ -8,12 +8,18 @@
 		}
 		public function Action_handler($array)
 		{
-			$this->executor_handler->executer($array);
+			/*print_r($this->executor_handler->logic_executer($array));
+			$collect = $this->executor_handler->executer($array,$this->executor_handler->logic_executer);
+			foreach ($collect as $val) print_r($val);*/
+			$this->executor_handler->logic_executer($array);
 			$this->array_answer_of_model_handler = $this->executor_handler->array_answer;
 			return $this->array_answer_of_model_handler;
 		}
-	} 
+	}
+	#update 08.01.2017 to version 1.1
 	class executor_handler implements IExecutor_handler{
+		private $arr_for_mysql = [];
+		private $arr_for_arr_answer = [];
 		private $Mysql_comands_handler;
 		private $Executor_supporting_function;
 		public $array_answer = array();
@@ -21,46 +27,34 @@
 			$this->Mysql_comands_handler = $msq_comand;
 			$this->Executor_supporting_function = $sup;
 		}
-		public function executer($array){
-			for ($i=0; $i < count($array); $i++) { 
-				$real_url = $array["$i"];
-				$this->logic_executer($real_url);
+		public function executer ($array,$callback)
+		{
+			foreach ($array as $item)
+			{
+				yield $callback($item);
 			}
 		}
-		private function logic_executer($real){
-			$real_url_result = $this->Mysql_comands_handler->same_real_url_SELECT('realurl','Reality',$real);
-			if ($real_url_result !== false) {
-				$vertual_url = mysqli_fetch_assoc($real_url_result)['Vertuality'];
-				if (isset($_COOKIE['ID'])) {
-					$id = config::clean($_COOKIE['ID']);
-					$statistic_url = $this->Mysql_comands_handler->same_vertual_url_SELECT('statisticurl','cookie_ID','vertual_url',$id,$vertual_url);
-					if ($statistic_url !== false) {
-						$statistic_url_result = mysqli_fetch_assoc($statistic_url)['statistic_url'];
-						$this->array_answer[] = $this->Executor_supporting_function->create_array_new_links($vertual_url,$statistic_url_result,$real);
+		public function logic_executer($item){
+			$collect = $this->executer($item,function ($e){
+				$real_url_result = $this->Mysql_comands_handler->same_real_url_SELECT('realurl','Reality',$e);
+				$id = config::clean($_COOKIE['ID'] ?? 'Anon');
+				if ($real_url_result === false) {
+					$vertual_url = $this->Executor_supporting_function->addInTableRealurlNewUrl($e);
+				}
+				else {
+					$vertual_url = mysqli_fetch_assoc($real_url_result)['Vertuality'];
+					$statistic_url_result = $this->Mysql_comands_handler->same_vertual_url_SELECT('statisticurl','cookie_ID','vertual_url',$id,$vertual_url);
+					if ($statistic_url_result !== false) {
+						$statistic_url = mysqli_fetch_assoc($statistic_url_result)['statistic_url'];
+						$this->array_answer[] = $this->Executor_supporting_function->create_array_new_links($vertual_url, $statistic_url, $e);
 						return;
 					}
-					$new_statistic_url = $this->Executor_supporting_function->chekRandomVirtualityNameInMysqlForStatistic();
-					$this->Mysql_comands_handler->addInTablesStatisticurlAndStatisticNewUrl("statisticurl","statistic","statistic_url","$id","$new_statistic_url","$vertual_url");
-					$this->array_answer[] = $this->Executor_supporting_function->create_array_new_links($vertual_url,$new_statistic_url,$real);
-					return;
 				}
-				$new_statistic_url = $this->Executor_supporting_function->chekRandomVirtualityNameInMysqlForStatistic();
-				$this->Mysql_comands_handler->addInTablesStatisticurlAndStatisticNewUrl("statisticurl","statistic","statistic_url","Anon","$new_statistic_url","$vertual_url");
-				$this->array_answer[] = $this->Executor_supporting_function->create_array_new_links($vertual_url,$new_statistic_url,$real);
-				return;
-			}else{
-				$new_vertual_url = $this->Executor_supporting_function->addInTableRealurlNewUrl($real);
-				$new_statistic_url = $this->Executor_supporting_function->chekRandomVirtualityNameInMysqlForStatistic();
-				if (isset($_COOKIE['ID'])) {
-					$id = config::clean($_COOKIE['ID']);
-					$this->Mysql_comands_handler->addInTablesStatisticurlAndStatisticNewUrl("statisticurl","statistic","statistic_url","$id","$new_statistic_url","$new_vertual_url");
-					$this->array_answer[] = $this->Executor_supporting_function->create_array_new_links($new_vertual_url,$new_statistic_url,$real);
-				}else{
-				$this->Mysql_comands_handler->addInTablesStatisticurlAndStatisticNewUrl("statisticurl","statistic","statistic_url","Anon","$new_statistic_url","$new_vertual_url");
-				$this->array_answer[] = $this->Executor_supporting_function->create_array_new_links($new_vertual_url,$new_statistic_url,$real);
-				return;
-				}
-			}
+				$statistic_url = $this->Executor_supporting_function->chekRandomVirtualityNameInMysqlForStatistic();
+				$this->Mysql_comands_handler->addInTablesStatisticurlAndStatisticNewUrl("statisticurl","statistic","statistic_url",$id,$statistic_url,$vertual_url);
+				$this->array_answer[] = $this->Executor_supporting_function->create_array_new_links($vertual_url,$statistic_url,$e);
+			});
+			foreach ($collect as $val);
 		}
 	}
 	class executor_supporting_function implements IExecutor_supporting_function{

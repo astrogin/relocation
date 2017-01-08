@@ -13,7 +13,7 @@
 		public function Action_handler()
 		{
 				$this->array_urls_in_model = $_REQUEST;
-				echo $this->add_view($this->Model_handler->Action_handler($this->array_urls_in_model));
+				$this->add_view($this->Model_handler->Action_handler($this->array_urls_in_model));
 		}
 		protected function add_view($arr){
 			require_once "../View/View_handler.php";
