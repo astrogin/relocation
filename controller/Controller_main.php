@@ -26,13 +26,12 @@
 	#connect.php
 	$mysql_connect_object = new connect;
 	#Model_cookie.php
-	$take_cookie = new Take_cookies;
 	$mysql_commands_cookie = new Mysql_for_cookie($mysql_connect_object);
-	$set_cookie = new Set_cookies($take_cookie,$mysql_commands_cookie);
+	$set_cookie = new Set_cookies($mysql_commands_cookie);
 	$set_cookie->setting_cookies();
 	#Model_main.php
 	$Mysql_for_answer = new Mysql_for_answer($mysql_connect_object);
-	$form_answer_urls = new form_answer_urls($take_cookie,$Mysql_for_answer,$set_cookie);
+	$form_answer_urls = new form_answer_urls($Mysql_for_answer,$set_cookie);
 	$model_main_object = new Model_main($form_answer_urls,$Mysql_for_answer,$set_cookie);
 
 

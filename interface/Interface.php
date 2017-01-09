@@ -2,15 +2,11 @@
 	//Controller Interface
 
 	//Model Interface
-	interface ISeted_cookie{
-		function seted_cookie();
-	}
 	interface ISetting_cookie{
 		function setting_cookies();
 	}
 	interface IMysql_for_cookie{
 		function setting_cookies_SELECT($table,$coll,$cookie_id_new);
-		//function setting_cookies_INSERT($table,$coll,$cookie_id_new);
 	}
 	interface IModel_main{
 		function Action_index();

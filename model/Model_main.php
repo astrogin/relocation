@@ -20,17 +20,15 @@
 	}
 	#sort info of db
 	class form_answer_urls implements IAnswer_urls{
-		protected $Take_cookies_obj;
 		protected $Mysql_result_obj;
 		protected $set_cook;
 		private $answer_cookie = array();
-		function __construct(ISeted_cookie $Take_cookies,IMysql_for_answer_url $mysql_result,ISetting_cookie $set_cookie){
-			$this->Take_cookies_obj = $Take_cookies;
+		function __construct(IMysql_for_answer_url $mysql_result,ISetting_cookie $set_cookie){
 			$this->Mysql_result_obj = $mysql_result;
 			$this->set_cook = $set_cookie;
 		}
 		public function answer_urls(){
-			if ($this->Take_cookies_obj->seted_cookie() === true) {
+			if ($this->set_cook->cookie_id === "Anonymous") {
 				return $answer_cookie = false;
 			}else{
 				$res = $this->Mysql_result_obj->answer_url_SELECT('statisticurl','cookie_ID','vertual_url',$this->set_cook->setting_cookies());
