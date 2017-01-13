@@ -19,7 +19,7 @@
 		}
 		private function logic_data(){
 			$statistic_uri = explode("Q",substr(config::clean($_SERVER["REQUEST_URI"]), 1))[1];
-			$result_mysqli = $this->mysqli->statistic_url_SELECT('statistic','statistic_url',$statistic_uri);
+			$result_mysqli = $this->mysqli->one_SELECT('statistic','statistic_url',$statistic_uri);
 			$mysqli_fetch = mysqli_fetch_row($result_mysqli);
 			$date = $this->date_time->return_date()[0];
 			$time = $this->date_time->return_date()[1];
@@ -74,18 +74,14 @@
 			}
 	}
 	class Mysql_model_take_data extends Mysql implements IMysql_model_take_data{
-		public function statistic_url_SELECT($table,$col,$val){
-			$query = "SELECT * FROM $table WHERE $col LIKE '$val'";
-			$result = mysqli_query($this->link,$query);
-			return $result;
-		}
 		public function statistic_UPDATE($date,$time,$ip,$region,$browser,$version,$platform,$val){
-			$query = "UPDATE statistic SET date = '$date',time='$time',ip_address='$ip',region='$region',browser='$browser',version ='$version',platform='$platform' WHERE statistic_url = '$val'";
-			return mysqli_query($this->link,$query);
+			$this->save_mode("UPDATE statistic SET date = ?,time= ?,ip_address=?,region=?,
+							browser=?,version =?,platform=? WHERE statistic_url = ?",
+							['ssssssss',$date,$time,$ip,$region,$browser,$version,$platform,$val]);
 		}
 		public function statistic_INSERT($date,$time,$ip,$region,$browser,$version,$platform,$val){
-			$query = "INSERT INTO statistic VALUES ('$val','$date','$time','$ip','$region','$browser','$version','$platform')";
-			return mysqli_query($this->link,$query);
+			$this->save_mode("INSERT INTO statistic VALUES (?,?,?,?,?,?,?,?)",
+							['ssssssss',$val,$date,$time,$ip,$region,$browser,$version,$platform]);
 		}
 	}
  ?>

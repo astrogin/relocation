@@ -8,9 +8,6 @@
 		}
 		public function Action_handler($array)
 		{
-			/*print_r($this->executor_handler->logic_executer($array));
-			$collect = $this->executor_handler->executer($array,$this->executor_handler->logic_executer);
-			foreach ($collect as $val) print_r($val);*/
 			$this->executor_handler->logic_executer($array);
 			$this->array_answer_of_model_handler = $this->executor_handler->array_answer;
 			return $this->array_answer_of_model_handler;
@@ -18,8 +15,6 @@
 	}
 	#update 08.01.2017 to version 1.1
 	class executor_handler implements IExecutor_handler{
-		private $arr_for_mysql = [];
-		private $arr_for_arr_answer = [];
 		private $Mysql_comands_handler;
 		private $Executor_supporting_function;
 		public $array_answer = array();
@@ -35,17 +30,17 @@
 			}
 		}
 		public function logic_executer($item){
-			$collect = $this->executer($item,function ($e){
-				$real_url_result = $this->Mysql_comands_handler->same_real_url_SELECT('realurl','Reality',$e);
+				$collect = $this->executer($item,function ($e){
+				$real_url_result = $this->Mysql_comands_handler->one_SELECT('realurl','Reality',$e);
 				$id = config::clean($_COOKIE['ID'] ?? 'Anon');
-				if ($real_url_result === false) {
+				if ($real_url_result->num_rows === 0) {
 					$vertual_url = $this->Executor_supporting_function->addInTableRealurlNewUrl($e);
 				}
 				else {
-					$vertual_url = mysqli_fetch_assoc($real_url_result)['Vertuality'];
+					$vertual_url = $real_url_result->fetch_assoc()['Vertuality'];
 					$statistic_url_result = $this->Mysql_comands_handler->same_vertual_url_SELECT('statisticurl','cookie_ID','vertual_url',$id,$vertual_url);
-					if ($statistic_url_result !== false) {
-						$statistic_url = mysqli_fetch_assoc($statistic_url_result)['statistic_url'];
+					if ($statistic_url_result->num_rows !== 0) {
+						$statistic_url = $statistic_url_result->fetch_assoc()['statistic_url'];
 						$this->array_answer[] = $this->Executor_supporting_function->create_array_new_links($vertual_url, $statistic_url, $e);
 						return;
 					}
@@ -70,8 +65,8 @@
 		}
 		public function chekRandomVirtualityNameInMysqlForStatistic() {
 			$endVNForStatistic = config::randomVirtualityName();
-			$result_query = $this->Mysql_comands_handler->same_real_url_SELECT('statisticurl','statistic_url',$endVNForStatistic);
-			if ($result_query !== false) {
+			$result_query = $this->Mysql_comands_handler->one_SELECT('statisticurl','statistic_url',$endVNForStatistic);
+			if ($result_query->num_rows !== 0) {
 				$this->chekRandomVirtualityNameInMysqlForStatistic();
 			}else{
 				return $endVNForStatistic;
@@ -80,7 +75,8 @@
 		public function addInTableRealurlNewUrl($real_url){
 			$random_vertul_url = config::randomVirtualityName();
 			$this->Mysql_comands_handler->lock_table_write('realurl');
-			if ($this->Mysql_comands_handler->same_real_url_SELECT('realurl','Vertuality',$random_vertul_url) !== false) {
+			$result = $this->Mysql_comands_handler->one_SELECT('realurl','Vertuality',$random_vertul_url);
+			if ($result->num_rows !== 0) {
 				$this->addInTableRealurlNewUrl($real_url);
 			}else{
 				$this->Mysql_comands_handler->INSERT_one_table('realurl',$real_url,$random_vertul_url);
@@ -90,35 +86,21 @@
 		}
 	}
 	class Mysql_comands_handler extends Mysql implements IMysql_comands_handler{
-		public function same_real_url_SELECT($table,$col,$val){
-			return $this->logic_sql("SELECT * FROM $table WHERE $col = '$val'");
-		}
 		public function same_vertual_url_SELECT($table,$col_first,$col_second,$val_first,$val_second){
-			return $this->logic_sql("SELECT * FROM $table WHERE `$col_first` = '$val_first' AND `$col_second` = '$val_second'");
+			return $this->save_mode("SELECT * FROM $table WHERE $col_first=? AND $col_second=?",["ss",$val_first,$val_second]);
 		}
 		public function INSERT_one_table(...$args){
 			if (isset($args[3])) {
-				mysqli_query($this->link,"INSERT INTO $args[0] VALUES ('$args[1]','$args[2]','$args[3]')");
+				$this->save_mode("INSERT INTO $args[0] VALUES (?,?,?)",["sss",$args[1],$args[2],$args[3]]);
 			}else if (isset($args[2])){
-				mysqli_query($this->link,"INSERT INTO $args[0] VALUES ('$args[1]','$args[2]')");
+				$this->save_mode("INSERT INTO $args[0] VALUES (?,?)",["ss",$args[1],$args[2]]);
 			}
 		}
 		public function addInTablesStatisticurlAndStatisticNewUrl($table_1,$table_2,$col,$val_1,$val_2,$val_3){
-			mysqli_query($this->link, "LOCK TABLES $table_1,$table_2 WRITE");
-			mysqli_query($this->link, "INSERT INTO $table_1 VALUES ('$val_1','$val_2','$val_3')");
-			mysqli_query($this->link, "INSERT INTO $table_2 ($col) VALUES ('$val_2')");
-			mysqli_query($this->link, "UNLOCK TABLES");
-		}
-		public function statistic_url_UPDATE($table,$col_first,$col_second,$col_third,$val_first,$val_second,$val_third){
-			mysqli_query($this->link,"UPDATE $table SET $col_first = '$val_first',$col_second = '$val_second' WHERE $col_third = '$val_third'");
-		}
-		protected function logic_sql($q){
-			$result = mysqli_query($this->link,"$q");
-			if (isset($result->num_rows) && $result->num_rows >= 1) {
-				return $result;
-			}
-			$this->mysql_result = false;
-			return $this->mysql_result;
+			$this->mysqli->query("LOCK TABLES $table_1,$table_2 WRITE");
+			$this->save_mode("INSERT INTO $table_1 VALUES (?,?,?)",["sss",$val_1,$val_2,$val_3]);
+			$this->save_mode("INSERT INTO $table_2 ($col) VALUES (?)",["s",$val_2]);
+			$this->mysqli->query("UNLOCK TABLES");
 		}
 	}
  ?>

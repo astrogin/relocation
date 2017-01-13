@@ -11,7 +11,7 @@
 		}
 		private function logic_relocation(){
 			$vertual_uri = explode("Q",substr(config::clean($_SERVER["REQUEST_URI"]), strrpos(config::clean($_SERVER["REQUEST_URI"]),'/')+1))[0];
-			$result_real_uri = $this->mysqli->real_url_SELECT('realurl','Vertuality',$vertual_uri);
+			$result_real_uri = $this->mysqli->one_SELECT('realurl','Vertuality',$vertual_uri);
 			if ($result_real_uri->num_rows) {
 				$reaul_uri_nonfixed = mysqli_fetch_assoc($result_real_uri)['Reality'];
 				$real_uri = $this->fixed_real_url($reaul_uri_nonfixed);
@@ -32,9 +32,6 @@
 		}
 	}
 	class Mysql_model_relocation extends Mysql implements IMysql_model_relocation{
-		public function real_url_SELECT($table,$col,$val){
-			$result = mysqli_query($this->link,"SELECT HIGH_PRIORITY * FROM $table WHERE $col LIKE '$val'");
-			return $result;
-		}
+		
 	}
  ?>

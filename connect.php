@@ -9,12 +9,12 @@
 			$this->host = $h;
 			$this->password = $p;
 			$this->user = $u;
-			$this->dbname = $bd;
+			$this->dbname = $db;
 		}
 		public function connecting(){
-			$link = mysqli_connect($this->host,$this->user , $this->password, $this->dbname);
+			$mysqli = new mysqli($this->host,$this->user , $this->password, $this->dbname);
 			$this->error();
-			return $link;
+			return $mysqli;
 		}
 		private function error(){
 			if (mysqli_connect_error()) {

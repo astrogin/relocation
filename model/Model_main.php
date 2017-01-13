@@ -32,7 +32,7 @@
 				return $answer_cookie = false;
 			}else{
 				$res = $this->Mysql_result_obj->answer_url_SELECT('statisticurl','cookie_ID','vertual_url',$this->set_cook->setting_cookies());
-				if ($res !== false) {
+				if ($res->num_rows >= 1) {
 					$select_array_first_table = config::result_row_mysql_in_array($res,'mysqli_fetch_assoc');
 					for ($i = 0; $i <  count($select_array_first_table) ; $i++) {
 						$timerVar = $select_array_first_table[$i]['vertual_url'];
@@ -48,18 +48,11 @@
 	class Mysql_for_answer extends Mysql implements IMysql_for_answer_url
 	{
 		public function answer_url_SELECT($table,$col_one,$col_two,$cookie_id){
-			$query = "SELECT $col_two FROM $table WHERE $col_one = '$cookie_id'";
-			$result = mysqli_query($this->link,$query);
-			if ($result->num_rows >= 1) {
-				return $result;
-			}
-			$this->mysql_result = false;
-			return $this->mysql_result;
+			return $this->save_mode("SELECT $col_two FROM $table WHERE $col_one=?",["s",$cookie_id]);
 		}
 		public function second_answer_url_SELECT($conditions_first,$conditions_second){
-			$query = "SELECT `statistic_url` FROM `statisticurl` WHERE cookie_ID = '$conditions_first' AND vertual_url = '$conditions_second' UNION SELECT Reality FROM `realurl` WHERE Vertuality = '$conditions_second'";
-			$result = mysqli_query($this->link,$query);
-			return $result;
+			return $this->save_mode("SELECT `statistic_url` FROM `statisticurl` WHERE cookie_ID=? AND vertual_url=? 
+									UNION SELECT Reality FROM `realurl` WHERE Vertuality=?",["sss",$conditions_first,$conditions_second,$conditions_second]);
 		}
 	}
  ?>

@@ -14,7 +14,7 @@
 		{
 			if ($this->cookie_id === "Anonymous"){
 				$this->cookie_id = config::randomVirtualityName();
-				$mysql_bool = $this->Mysql_result_obj->setting_cookies_SELECT('statisticurl','cookie_ID',$this->cookie_id);
+				$mysql_bool = $this->Mysql_result_obj->one_SELECT('statisticurl','cookie_ID',["s",$this->cookie_id]);
 				if ($mysql_bool->num_rows !== 0) return $this->setting_cookies();
 				setcookie("ID",$this->cookie_id,time()+999999999);
 			}
@@ -24,8 +24,6 @@
 	}
 	class Mysql_for_cookie extends Mysql implements IMysql_for_cookie
 	{
-		public function setting_cookies_SELECT($table,$coll,$cookie_id_new){
-			return mysqli_query($this->link,"SELECT * FROM $table WHERE $coll LIKE '$cookie_id_new'");
-		}
+
 	}
  ?>

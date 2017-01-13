@@ -6,7 +6,6 @@
 		function setting_cookies();
 	}
 	interface IMysql_for_cookie{
-		function setting_cookies_SELECT($table,$coll,$cookie_id_new);
 	}
 	interface IModel_main{
 		function Action_index();
@@ -26,7 +25,6 @@
 		function Action_handler($array);
 	}
 	interface IMysql_comands_handler{
-		function same_real_url_SELECT($table,$col,$val);
 		function same_vertual_url_SELECT($table,$col_first,$col_second,$val_first,$val_second);
 		function INSERT_one_table(...$args);
 		function addInTablesStatisticurlAndStatisticNewUrl($table_1,$table_2,$col,$val_1,$val_2,$val_3);
@@ -44,7 +42,6 @@
 		function Action_relocation();
 	}
 	interface IMysql_model_relocation{
-		function real_url_SELECT($table,$col,$val);
 	}
 	#Model_take_data.php
 	interface IModel_take_data{
@@ -75,7 +72,6 @@
 		function platform($user_agent);
 	}
 	interface IMysql_model_take_data{
-		function statistic_url_SELECT($table,$col,$val);
 		function statistic_UPDATE($date,$time,$ip,$region,$browser,$version,$platform,$val);
 		function statistic_INSERT($date,$time,$ip,$region,$browser,$version,$platform,$val);
 	}

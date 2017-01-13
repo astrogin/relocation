@@ -12,7 +12,7 @@
 		}
 		private function push_array_answer(){
 			$array_urls = explode("Q",substr(config::clean($_SERVER["REQUEST_URI"]), strrpos(config::clean($_SERVER["REQUEST_URI"]),'/')+1));
-			$real_uri = mysqli_fetch_assoc($this->mysqli->real_url_SELECT("realurl","Vertuality",$array_urls[0]))['Reality'];
+			$real_uri = $this->mysqli->one_SELECT("realurl","Vertuality",$array_urls[0])->fetch_assoc()['Reality'];
 			$statistic_uri = substr($array_urls[1],0,-1);
 			$result_statistic = $this->mysqli->real_url_SELECT("statistic","statistic_url",$statistic_uri,"date");
 			if ($result_statistic->num_rows) {
@@ -28,14 +28,7 @@
 	}
 	class Mysql_statistic extends Mysql implements IMysql_statistic{
 		public function real_url_SELECT(...$args){
-			if (isset($args[3])) {
-				$query = "SELECT * FROM $args[0] WHERE $args[1] = '$args[2]' ORDER BY $args[3]";
-				$result = mysqli_query($this->link,$query);
-				return $result;
-			}
-			$query = "SELECT * FROM $args[0] WHERE $args[1] = '$args[2]'";
-			$result = mysqli_query($this->link,$query);
-			return $result;
+			return $this->save_mode("SELECT * FROM $args[0] WHERE $args[1] =?",["s",$args[2]]);
 		}
 	}
  ?>
