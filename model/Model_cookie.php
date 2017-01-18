@@ -3,7 +3,7 @@
 	abstract class Cookies{
 		protected $Mysql_result_obj;
 		public $cookie_id;
-		function __construct(IMysql_for_cookie $mysql_result){
+		function __construct($mysql_result){
 			$this->Mysql_result_obj = $mysql_result;
 			$this->cookie_id = config::clean($_COOKIE['ID'] ?? "Anonymous");
 		}
@@ -14,16 +14,12 @@
 		{
 			if ($this->cookie_id === "Anonymous"){
 				$this->cookie_id = config::randomVirtualityName();
-				$mysql_bool = $this->Mysql_result_obj->one_SELECT('statisticurl','cookie_ID',["s",$this->cookie_id]);
+				$mysql_bool = $this->Mysql_result_obj->find('statisticurl','cookie_ID = ?',["s",$this->cookie_id]);
 				if ($mysql_bool->num_rows !== 0) return $this->setting_cookies();
 				setcookie("ID",$this->cookie_id,time()+999999999);
 			}
 			//string
 			return $this->cookie_id;
 		}
-	}
-	class Mysql_for_cookie extends Mysql implements IMysql_for_cookie
-	{
-
 	}
  ?>

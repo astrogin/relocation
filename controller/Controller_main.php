@@ -1,7 +1,7 @@
 <?php
 	require_once "interface/Interface.php";
 	require_once 'connect.php';
-	require_once "model/Model_abstract_class_mysql.php";
+	require_once "model/Model_class_mysql.php";
 	require_once "model/Model_cookie.php";
 	require_once 'model/Model_main.php';
 	class Controller_main 
@@ -26,11 +26,11 @@
 	#connect.php
 	$mysql_connect_object = new connect;
 	#Model_cookie.php
-	$mysql_commands_cookie = new Mysql_for_cookie($mysql_connect_object);
+	$mysql_commands_cookie = new Mysql($mysql_connect_object);
 	$set_cookie = new Set_cookies($mysql_commands_cookie);
 	$set_cookie->setting_cookies();
 	#Model_main.php
-	$Mysql_for_answer = new Mysql_for_answer($mysql_connect_object);
+	$Mysql_for_answer = new Mysql($mysql_connect_object);
 	$form_answer_urls = new form_answer_urls($Mysql_for_answer,$set_cookie);
 	$model_main_object = new Model_main($form_answer_urls,$Mysql_for_answer,$set_cookie);
 

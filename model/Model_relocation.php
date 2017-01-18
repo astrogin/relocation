@@ -2,7 +2,7 @@
 	use library_function\config;
 	class Model_relocation implements IModel_relocation{
 		private $mysqli;
-		function __construct(IMysql_model_relocation $msq)
+		function __construct($msq)
 		{
 			$this->mysqli = $msq;
 		}
@@ -10,10 +10,12 @@
 			$this->logic_relocation();
 		}
 		private function logic_relocation(){
-			$vertual_uri = explode("Q",substr(config::clean($_SERVER["REQUEST_URI"]), strrpos(config::clean($_SERVER["REQUEST_URI"]),'/')+1))[0];
-			$result_real_uri = $this->mysqli->one_SELECT('realurl','Vertuality',$vertual_uri);
+			preg_match("/[\w]{2,4}Q[\w]{2,4}+/m",config::clean($_SERVER['REQUEST_URI']),$matches);
+			$array_urls = explode("Q",$matches[0]);
+			$arr_im_msq = ['s',$array_urls[0]];
+			$result_real_uri = $this->mysqli->find('realurl','Vertuality = ?',$arr_im_msq);
 			if ($result_real_uri->num_rows) {
-				$reaul_uri_nonfixed = mysqli_fetch_assoc($result_real_uri)['Reality'];
+				$reaul_uri_nonfixed = $result_real_uri->fetch_assoc()['Reality'];
 				$real_uri = $this->fixed_real_url($reaul_uri_nonfixed);
 				header("Location: http://$real_uri",true,301);
 			}else{
@@ -30,8 +32,5 @@
 			};
 			return $res;
 		}
-	}
-	class Mysql_model_relocation extends Mysql implements IMysql_model_relocation{
-		
 	}
  ?>

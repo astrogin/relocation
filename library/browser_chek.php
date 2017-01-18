@@ -1,5 +1,5 @@
  <?php
- class script_browser_version_platform implements IScript_browser_version_platform{
+ class script_browser_version_platform{
  public function browser_and_version($user_agent)
   {
     if (strpos($user_agent, "Firefox") !== false){ 
