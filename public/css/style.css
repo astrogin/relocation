@@ -1,0 +1,13 @@
+body{
+    padding:0;
+    margin:0;
+}
+.container_content{
+    width: 100%;
+    vertical-align: middle;
+    text-align: center;
+}
+.container_content form{
+    margin-top: 20%;
+    color: green;
+}
